@@ -10,13 +10,13 @@ public class DeliveryOrder {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable=false)
+    @Column(name="order_list")
     private String orderList;
 
-    @Column(nullable=false)
+    @Column(name="user_name")
     private String userName;
 
-    @Column(nullable=false)
+    @Column(name="address")
     private String address;
 
     public DeliveryOrder() {
