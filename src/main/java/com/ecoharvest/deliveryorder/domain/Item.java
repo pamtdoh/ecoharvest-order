@@ -1,5 +1,7 @@
 package com.ecoharvest.deliveryorder.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 
 @Entity
@@ -12,6 +14,7 @@ public class Item {
 
     @ManyToOne
     @JoinColumn(name="order_id")
+    @JsonIgnore
     private DeliveryOrder deliveryOrder;
 
     @Column(name="name")
