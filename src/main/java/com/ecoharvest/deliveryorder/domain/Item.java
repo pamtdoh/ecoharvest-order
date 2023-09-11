@@ -14,7 +14,6 @@ public class Item {
 
     @ManyToOne
     @JoinColumn(name="order_id")
-    @JsonIgnore
     private DeliveryOrder deliveryOrder;
 
     @Column(name="name")
