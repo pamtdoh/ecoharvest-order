@@ -28,6 +28,12 @@ public class DeliveryOrderController {
         return ResponseEntity.ok(deliveryOrder);
     }
 
+    @GetMapping("/history/{userName}")
+    public ResponseEntity<List<DeliveryOrder>> findAllByUserName(@PathVariable String userName) {
+        List<DeliveryOrder> deliveryOrder = deliveryOrderRepository.findAllByUserName(userName);
+        return ResponseEntity.ok(deliveryOrder);
+    }
+
     @PostMapping("/add")
     public ResponseEntity<DeliveryOrder> create(@RequestBody DeliveryOrder deliveryOrder) {
         DeliveryOrder savedDeliveryOrder = deliveryOrderRepository.save(deliveryOrder);
@@ -37,16 +43,17 @@ public class DeliveryOrderController {
     @PostMapping("/edit/{id}")
     public ResponseEntity<DeliveryOrder> update(@PathVariable Long id, @RequestBody DeliveryOrder updatedDeliveryOrder) {
         Optional<DeliveryOrder> deliveryOrderOptional = deliveryOrderRepository.findById(id);
-        if (deliveryOrderOptional.isPresent()) {
-            DeliveryOrder deliveryOrder = deliveryOrderOptional.get();
-            deliveryOrder.setOrderList(updatedDeliveryOrder.getOrderList());
-            deliveryOrder.setAddress(updatedDeliveryOrder.getAddress());
-            deliveryOrder.setUserName(updatedDeliveryOrder.getUserName());
-            DeliveryOrder savedDeliveryOrder = deliveryOrderRepository.save(deliveryOrder);
-            return ResponseEntity.ok(savedDeliveryOrder);
-        } else {
+        if (deliveryOrderOptional.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
+        DeliveryOrder deliveryOrder = deliveryOrderOptional.get();
+        deliveryOrder.setItems(updatedDeliveryOrder.getItems());
+        deliveryOrder.setUserName(updatedDeliveryOrder.getUserName());
+        deliveryOrder.setAddress(updatedDeliveryOrder.getAddress());
+        deliveryOrder.setTimeslot(updatedDeliveryOrder.getTimeslot());
+        deliveryOrder.setDeliveryStatus(updatedDeliveryOrder.getDeliveryStatus());
+        DeliveryOrder savedDeliveryOrder = deliveryOrderRepository.save(deliveryOrder);
+        return ResponseEntity.ok(savedDeliveryOrder);
     }
 
     @DeleteMapping("/{id}")
@@ -59,4 +66,5 @@ public class DeliveryOrderController {
             return ResponseEntity.notFound().build();
         }
     }
+
 }

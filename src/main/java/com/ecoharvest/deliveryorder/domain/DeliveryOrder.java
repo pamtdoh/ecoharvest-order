@@ -1,6 +1,7 @@
 package com.ecoharvest.deliveryorder.domain;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "delivery_order")
@@ -10,8 +11,8 @@ public class DeliveryOrder {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name="order_list")
-    private String orderList;
+    @OneToMany(mappedBy = "deliveryOrder", cascade = CascadeType.ALL)
+    private List<Item> items;
 
     @Column(name="user_name")
     private String userName;
@@ -19,13 +20,19 @@ public class DeliveryOrder {
     @Column(name="address")
     private String address;
 
+    @Column(name="timeslot")
+    private String timeslot;
+
+    @Column(name="delivery_status")
+    private String deliveryStatus;
+
     public DeliveryOrder() {
         super();
     }
 
-    public DeliveryOrder(String orderList, String userName, String address) {
+    public DeliveryOrder(List<Item> items, String userName, String address) {
         super();
-        this.orderList = orderList;
+        this.items = items;
         this.userName = userName;
         this.address = address;
     }
@@ -38,12 +45,12 @@ public class DeliveryOrder {
         this.id = id;
     }
 
-    public String getOrderList() {
-        return orderList;
+    public List<Item> getItems() {
+        return items;
     }
 
-    public void setOrderList(String orderList) {
-        this.orderList = orderList;
+    public void setItems(List<Item> items) {
+        this.items = items;
     }
 
     public String getUserName() {
@@ -61,4 +68,21 @@ public class DeliveryOrder {
     public void setAddress(String address) {
         this.address = address;
     }
+
+    public String getTimeslot() {
+        return timeslot;
+    }
+
+    public void setTimeslot(String timeslot) {
+        this.timeslot = timeslot;
+    }
+
+    public String getDeliveryStatus() {
+        return deliveryStatus;
+    }
+
+    public void setDeliveryStatus(String deliveryStatus) {
+        this.deliveryStatus = deliveryStatus;
+    }
+
 }

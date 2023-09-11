@@ -12,4 +12,6 @@ public interface DeliveryOrderRepository extends CrudRepository<DeliveryOrder, L
 
     Optional<DeliveryOrder> findById(Long id);
 
+    List<DeliveryOrder> findAllByUserName(String userName);
+
 }
