@@ -1,6 +1,7 @@
 package com.ecoharvest.deliveryorder.domain;
 
 import javax.persistence.*;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 @Entity
@@ -11,7 +12,7 @@ public class DeliveryOrder {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany(mappedBy = "deliveryOrder", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "deliveryOrder", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Item> items;
 
     @Column(name="user_name")
@@ -19,6 +20,9 @@ public class DeliveryOrder {
 
     @Column(name="address")
     private String address;
+
+    @Column(name="created_timestamp")
+    private ZonedDateTime createdTimestamp;
 
     @Column(name="timeslot")
     private String timeslot;
@@ -67,6 +71,14 @@ public class DeliveryOrder {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public ZonedDateTime getCreatedTimestamp() {
+        return createdTimestamp;
+    }
+
+    public void setCreatedTimestamp(ZonedDateTime createdTimestamp) {
+        this.createdTimestamp = createdTimestamp;
     }
 
     public String getTimeslot() {
