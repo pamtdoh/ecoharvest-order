@@ -1,6 +1,8 @@
 package com.ecoharvest.deliveryorder.domain;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.util.List;
 
@@ -15,14 +17,20 @@ public class DeliveryOrder {
     @OneToMany(mappedBy = "deliveryOrder", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Item> items;
 
-    @Column(name="user_name")
-    private String userName;
+    @Column(name="total_price")
+    private BigDecimal totalPrice;
+
+    @Column(name="user_id")
+    private Long userId;
 
     @Column(name="address")
     private String address;
 
     @Column(name="created_timestamp")
     private ZonedDateTime createdTimestamp;
+
+    @Column(name="date")
+    private LocalDate date;
 
     @Column(name="timeslot")
     private String timeslot;
@@ -34,10 +42,10 @@ public class DeliveryOrder {
         super();
     }
 
-    public DeliveryOrder(List<Item> items, String userName, String address) {
+    public DeliveryOrder(List<Item> items, Long userId, String address) {
         super();
         this.items = items;
-        this.userName = userName;
+        this.userId = userId;
         this.address = address;
     }
 
@@ -57,12 +65,20 @@ public class DeliveryOrder {
         this.items = items;
     }
 
-    public String getUserName() {
-        return userName;
+    public BigDecimal getTotalPrice() {
+        return totalPrice;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setTotalPrice(BigDecimal totalPrice) {
+        this.totalPrice = totalPrice;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
     public String getAddress() {
@@ -79,6 +95,14 @@ public class DeliveryOrder {
 
     public void setCreatedTimestamp(ZonedDateTime createdTimestamp) {
         this.createdTimestamp = createdTimestamp;
+    }
+
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public void setDate(LocalDate date) {
+        this.date = date;
     }
 
     public String getTimeslot() {

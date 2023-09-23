@@ -1,11 +1,18 @@
 package com.ecoharvest.deliveryorder.service;
 
+import com.ecoharvest.deliveryorder.client.ProductClient;
 import com.ecoharvest.deliveryorder.domain.DeliveryOrder;
 import com.ecoharvest.deliveryorder.domain.Item;
+import com.ecoharvest.deliveryorder.domain.Product;
+import com.ecoharvest.deliveryorder.dto.DeliveryOrderRequest;
+import com.ecoharvest.deliveryorder.dto.ItemRequest;
 import com.ecoharvest.deliveryorder.repository.DeliveryOrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,11 +21,38 @@ public class DeliveryOrderService {
 
     @Autowired
     private DeliveryOrderRepository deliveryOrderRepository;
+    @Autowired
+    private ProductClient productClient;
 
-    public DeliveryOrder create(DeliveryOrder deliveryOrder) {
-        for (Item item : deliveryOrder.getItems()) {
+    public DeliveryOrder create(DeliveryOrderRequest request) {
+        DeliveryOrder deliveryOrder = new DeliveryOrder();
+        deliveryOrder.setUserId(request.getUserId());
+        deliveryOrder.setDeliveryStatus("SCHEDULED");
+        deliveryOrder.setCreatedTimestamp(ZonedDateTime.now());
+        deliveryOrder.setDate(request.getDate());
+        deliveryOrder.setTimeslot(request.getTimeslot());
+        deliveryOrder.setAddress(request.getAddress());
+
+        ArrayList<Item> items = new ArrayList<>();
+        BigDecimal totalPrice = BigDecimal.ZERO;
+
+        for (ItemRequest itemRequest: request.getItems()) {
+            Product p = productClient.getProductDetails(itemRequest.getProductId());
+            Item item = new Item();
+            item.setProductId(p.getId());
+            item.setName(p.getProductName());
+            item.setDescription(p.getDescription());
+            item.setQuantity(itemRequest.getQuantity());
+            item.setPrice(p.getPrice());
             item.setDeliveryOrder(deliveryOrder);
+            items.add(item);
+
+            totalPrice = totalPrice.add(p.getPrice().multiply(BigDecimal.valueOf(itemRequest.getQuantity())));
         }
+
+        deliveryOrder.setItems(items);
+        deliveryOrder.setTotalPrice(totalPrice);
+
         return deliveryOrderRepository.save(deliveryOrder);
     }
 
@@ -30,8 +64,8 @@ public class DeliveryOrderService {
         return deliveryOrderRepository.findById(id);
     }
 
-    public List<DeliveryOrder> findAllByUserName(String userName) {
-        return deliveryOrderRepository.findAllByUserName(userName);
+    public List<DeliveryOrder> findAllByUserId(Long userId) {
+        return deliveryOrderRepository.findAllByUserId(userId);
     }
 
     public DeliveryOrder update(Long id, DeliveryOrder updatedDeliveryOrder) {
@@ -45,7 +79,7 @@ public class DeliveryOrderService {
             item.setDeliveryOrder(deliveryOrder);
             deliveryOrder.getItems().add(item);
         }
-        deliveryOrder.setUserName(updatedDeliveryOrder.getUserName());
+        deliveryOrder.setUserId(updatedDeliveryOrder.getUserId());
         deliveryOrder.setAddress(updatedDeliveryOrder.getAddress());
         deliveryOrder.setCreatedTimestamp(updatedDeliveryOrder.getCreatedTimestamp());
         deliveryOrder.setTimeslot(updatedDeliveryOrder.getTimeslot());

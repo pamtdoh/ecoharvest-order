@@ -1,6 +1,7 @@
 package com.ecoharvest.deliveryorder.controller;
 
 import com.ecoharvest.deliveryorder.domain.DeliveryOrder;
+import com.ecoharvest.deliveryorder.dto.DeliveryOrderRequest;
 import com.ecoharvest.deliveryorder.service.DeliveryOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -28,14 +29,14 @@ public class DeliveryOrderController {
         return ResponseEntity.ok(deliveryOrderService.findById(id));
     }
 
-    @GetMapping("/history/{userName}")
-    public ResponseEntity<List<DeliveryOrder>> findAllByUserName(@PathVariable String userName) {
-        return ResponseEntity.ok(deliveryOrderService.findAllByUserName(userName));
+    @GetMapping("/history/{userId}")
+    public ResponseEntity<List<DeliveryOrder>> findAllByUserName(@PathVariable Long userId) {
+        return ResponseEntity.ok(deliveryOrderService.findAllByUserId(userId));
     }
 
     @PostMapping("/add")
-    public ResponseEntity<DeliveryOrder> create(@RequestBody DeliveryOrder deliveryOrder) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(deliveryOrderService.create(deliveryOrder));
+    public ResponseEntity<DeliveryOrder> create(@RequestBody DeliveryOrderRequest request) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(deliveryOrderService.create(request));
     }
 
     @PostMapping("/edit/{id}")

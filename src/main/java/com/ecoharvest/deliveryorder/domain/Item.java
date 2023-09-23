@@ -3,6 +3,7 @@ package com.ecoharvest.deliveryorder.domain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 
 @Entity
 @Table(name = "item")
@@ -10,7 +11,11 @@ public class Item {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonIgnore
     private Long id;
+
+    @Column(name="product_id")
+    private String productId;
 
     @ManyToOne
     @JoinColumn(name="order_id")
@@ -26,12 +31,23 @@ public class Item {
     @Column(name="quantity")
     private Integer quantity;
 
+    @Column(name="price")
+    private BigDecimal price;
+
     public Long getId() {
         return id;
     }
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getProductId() {
+        return productId;
+    }
+
+    public void setProductId(String productId) {
+        this.productId = productId;
     }
 
     public DeliveryOrder getDeliveryOrder() {
@@ -64,5 +80,13 @@ public class Item {
 
     public void setQuantity(Integer quantity) {
         this.quantity = quantity;
+    }
+
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
     }
 }
